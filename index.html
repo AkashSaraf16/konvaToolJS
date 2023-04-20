@@ -32,6 +32,7 @@
             else {
                 linePoints = [...linePoints, event.evt.clientX, event.evt.clientY]
             }
+            line.zIndex(1)
             line.points(linePoints);
         }
         const stage = new Konva.Stage({
@@ -45,7 +46,7 @@
             x: 0,
             y: 0,
             points: linePoints,
-            stroke: 'white',
+            stroke: 'black',
             strokeWidth: 2,
         });
         stage.on('mousedown', mouseDownHandler)
@@ -54,6 +55,15 @@
                 container.style.cursor = "crosshair";
         })
         layer.add(line);
+        Konva.Image.fromURL('/assets/map.jpg', function (googleMap) {
+                googleMap.setAttrs({
+                    x: 0,
+                    y: 0,
+                    scaleX: 1,
+                    scaleY: 1,
+                });
+                layer.add(googleMap);
+            });
         stage.add(layer);
     </script>
 </body>
