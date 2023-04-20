@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/konva@9.0.1/konva.min.js"></script>
+    <meta charset="utf-8" />
+    <title>Konva Tool</title>
+    <!-- <h2>Mouse down to set the starting point of a line and release it to stretch the line.</h2> -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #container{
+           background-color: black; 
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <script>
+        let linePoints = [];
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        function mouseDownHandler(event) {
+            console.log(linePoints)
+            if (linePoints.length === 0) {
+                linePoints = [event.evt.clientX, event.evt.clientY];
+            }
+            else {
+                linePoints = [...linePoints, event.evt.clientX, event.evt.clientY]
+            }
+            line.points(linePoints);
+        }
+        const stage = new Konva.Stage({
+            container: 'container',
+            width: width,
+            height: height,
+        });
+
+        const layer = new Konva.Layer();
+        const line = new Konva.Line({
+            x: 0,
+            y: 0,
+            points: linePoints,
+            stroke: 'white',
+            strokeWidth: 2,
+        });
+        stage.on('mousedown', mouseDownHandler)
+        stage.on('mouseenter', e => {
+                const container = e.target.getStage().container();
+                container.style.cursor = "crosshair";
+        })
+        layer.add(line);
+        stage.add(layer);
+    </script>
+</body>
+
+</html>
