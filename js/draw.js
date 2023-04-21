@@ -79,6 +79,25 @@ function keyupHander(event) {
   }
 }
 
+function downloadURI(uri, name) {
+  var link = document.createElement("a");
+  link.download = name;
+  link.href = uri;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  delete link;
+}
+
+function saveImageHandler() {
+  var dataURL = stage.toDataURL({ pixelRatio: 4 });
+  downloadURI(dataURL, "map.jpeg");
+}
+
+document
+  .getElementById("save")
+  .addEventListener("click", saveImageHandler, false);
+
 stage.on("mousedown", mouseDownHandler);
 stage.on("mousemove", mouseMoveHandler);
 window.addEventListener("keyup", keyupHander);
