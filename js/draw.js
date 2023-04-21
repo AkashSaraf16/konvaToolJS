@@ -89,9 +89,21 @@ function downloadURI(uri, name) {
   delete link;
 }
 
+async function convertToBase64FileSystem(url) {
+  const staticMapUrl = await fetch(url);
+  const imgBlob = await staticMapUrl.blob();
+  const imgPromise = new Promise((resolve) => {
+    const blobReader = new FileReader();
+    blobReader.readAsDataURL(imgBlob);
+    blobReader.onloadend = () => resolve(blobReader.result);
+  });
+  return imgPromise;
+}
+
 function saveImageHandler() {
-  var dataURL = stage.toDataURL({ pixelRatio: 4 });
-  downloadURI(dataURL, "map.jpeg");
+  var dataURL = stage.toDataURL({ pixelRatio: 1 });
+  const base64url = convertToBase64FileSystem(dataURL);
+  base64url.then((val) => console.log(val));
 }
 
 document
