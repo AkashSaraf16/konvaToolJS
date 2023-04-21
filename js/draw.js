@@ -1,3 +1,4 @@
+// will be dynamic temporary for testing
 const width = window.innerWidth / 2;
 const height = window.innerHeight / 2;
 const imgSRC = './img/map.jpg';
@@ -8,19 +9,13 @@ const stage = new Konva.Stage({
   height: height,
 });
 
+// create layers here
 const imgLayer = new Konva.Layer();
 const lineLayer = new Konva.Layer();
 
+// add all layers here
 stage.add(imgLayer);
 stage.add(lineLayer);
-
-let startPoint;
-let line;
-
-function mouseDownHandler() {
-  const pos = stage.getPointerPosition();
-  startPoint = pos;
-}
 
 function loadImg() {
   const img = new Konva.Image({
@@ -37,6 +32,16 @@ function loadImg() {
 const imageObj = new Image();
 imageObj.src = imgSRC;
 imageObj.onload = loadImg;
+
+
+// drawing line 
+let startPoint;
+let line;
+
+function mouseDownHandler() {
+    const pos = stage.getPointerPosition();
+    startPoint = pos;
+  }
 
 function mouseMoveHandler() {
   if (startPoint) {
@@ -58,13 +63,6 @@ function mouseMoveHandler() {
 }
 
 function mouseUpHandler() {
-  if (line) {
-    line.setAttrs({
-      draggable: false,
-      name: 'line',
-    });
-    lineLayer.draw();
-  }
   line = null;
   startPoint = null;
 }
