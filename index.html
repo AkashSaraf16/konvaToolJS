@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="styles.css" />
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
     <script src="https://unpkg.com/konva@9.0.1/konva.min.js"></script>
     <meta charset="utf-8" />
     <title>Konva Tool</title>
@@ -12,75 +12,15 @@
         padding: 0;
       }
       #container {
-        background-color: black;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
       }
     </style>
   </head>
 
   <body>
     <div id="container"></div>
-    <script>
-      let linePoints = [];
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      function mouseDownHandler(event) {
-        console.log(linePoints);
-        if (linePoints.length === 0) {
-          linePoints = [event.evt.clientX, event.evt.clientY];
-        } else {
-          linePoints = [...linePoints, event.evt.clientX, event.evt.clientY];
-        }
-        line.zIndex(1);
-        line.points(linePoints);
-      }
-      const stage = new Konva.Stage({
-        container: "container",
-        width: width,
-        height: height,
-      });
-
-      const layer = new Konva.Layer();
-      const line = new Konva.Line({
-        x: 0,
-        y: 0,
-        points: linePoints,
-        stroke: "black",
-        strokeWidth: 2,
-      });
-      stage.on("mousedown", mouseDownHandler);
-      stage.on("mouseenter", (e) => {
-        const container = e.target.getStage().container();
-        container.style.cursor = "crosshair";
-      });
-      layer.add(line);
-      Konva.Image.fromURL("/assets/map.jpg", function (googleMap) {
-        googleMap.setAttrs({
-          x: 0,
-          y: 0,
-          scaleX: 1,
-          scaleY: 1,
-        });
-        layer.add(googleMap);
-      });
-      stage.add(layer);
-      //    Undo changes using ctrl+z
-      document.addEventListener(
-        "keydown",
-        (event) => {
-          var name = event.key;
-          var code = event.code;
-          if (name === "Control") {
-            // Do nothing.
-            return;
-          }
-          if ((event.ctrlKey && name === "Z") || name === "z") {
-            linePoints.pop();
-            linePoints.pop();
-            line.points(linePoints);
-          }
-        },
-        false
-      );
-    </script>
+    <script src="./js/draw.js"></script>
   </body>
 </html>
