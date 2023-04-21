@@ -1,10 +1,10 @@
 // will be dynamic temporary for testing
 const width = window.innerWidth / 2;
 const height = window.innerHeight / 2;
-const imgSRC = './img/map.jpg';
+const imgSRC = "./img/map.jpg";
 
 const stage = new Konva.Stage({
-  container: 'container',
+  container: "container",
   width: width,
   height: height,
 });
@@ -53,10 +53,10 @@ function mouseMoveHandler() {
     } else {
       line = new Konva.Line({
         points: [startPoint.x, startPoint.y, pos.x, pos.y],
-        stroke: 'yellow',
+        stroke: "yellow",
         strokeWidth: 2,
-        lineCap: 'round',
-        lineJoin: 'round',
+        lineCap: "round",
+        lineJoin: "round",
       });
       lineLayer.add(line);
     }
@@ -69,6 +69,16 @@ function fixedPosition() {
   startPoint = null;
 }
 
-stage.on('mousedown', mouseDownHandler);
-stage.on('mousemove', mouseMoveHandler);
-window.addEventListener('keyup', fixedPosition);
+function keyupHander(event) {
+  var name = event.key;
+  if (name === "Control") {
+    return;
+  }
+  if ((event.ctrlKey && name === "Z") || name === "z") {
+    fixedPosition();
+  }
+}
+
+stage.on("mousedown", mouseDownHandler);
+stage.on("mousemove", mouseMoveHandler);
+window.addEventListener("keyup", keyupHander);
