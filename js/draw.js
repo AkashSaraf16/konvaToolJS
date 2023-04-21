@@ -33,15 +33,17 @@ const imageObj = new Image();
 imageObj.src = imgSRC;
 imageObj.onload = loadImg;
 
-
-// drawing line 
+// drawing line
 let startPoint;
 let line;
 
 function mouseDownHandler() {
-    const pos = stage.getPointerPosition();
-    startPoint = pos;
+  if (startPoint) {
+    fixedPosition();
   }
+  const pos = stage.getPointerPosition();
+  startPoint = pos;
+}
 
 function mouseMoveHandler() {
   if (startPoint) {
@@ -62,11 +64,11 @@ function mouseMoveHandler() {
   }
 }
 
-function mouseUpHandler() {
+function fixedPosition() {
   line = null;
   startPoint = null;
 }
 
 stage.on('mousedown', mouseDownHandler);
 stage.on('mousemove', mouseMoveHandler);
-stage.on('mouseup', mouseUpHandler);
+window.addEventListener('keyup', fixedPosition);
