@@ -1,10 +1,12 @@
+const saveButton = document.getElementById('save');
+
 // will be dynamic temporary for testing
 const width = window.innerWidth / 2;
 const height = window.innerHeight / 2;
-const imgSRC = "./img/map.jpg";
+const imgSRC = './img/map.jpg';
 
 const stage = new Konva.Stage({
-  container: "container",
+  container: 'container',
   width: width,
   height: height,
 });
@@ -53,10 +55,10 @@ function mouseMoveHandler() {
     } else {
       line = new Konva.Line({
         points: [startPoint.x, startPoint.y, pos.x, pos.y],
-        stroke: "yellow",
+        stroke: 'yellow',
         strokeWidth: 2,
-        lineCap: "round",
-        lineJoin: "round",
+        lineCap: 'round',
+        lineJoin: 'round',
       });
       lineLayer.add(line);
     }
@@ -71,16 +73,16 @@ function fixedPosition() {
 
 function keyupHander(event) {
   var name = event.key;
-  if (name === "Control") {
+  if (name === 'Control') {
     return;
   }
-  if ((event.ctrlKey && name === "Z") || name === "z") {
+  if ((event.ctrlKey && name === 'Z') || name === 'z') {
     fixedPosition();
   }
 }
 
 function downloadURI(uri, name) {
-  var link = document.createElement("a");
+  var link = document.createElement('a');
   link.download = name;
   link.href = uri;
   document.body.appendChild(link);
@@ -89,27 +91,12 @@ function downloadURI(uri, name) {
   delete link;
 }
 
-async function convertToBase64FileSystem(url) {
-  const staticMapUrl = await fetch(url);
-  const imgBlob = await staticMapUrl.blob();
-  const imgPromise = new Promise((resolve) => {
-    const blobReader = new FileReader();
-    blobReader.readAsDataURL(imgBlob);
-    blobReader.onloadend = () => resolve(blobReader.result);
-  });
-  return imgPromise;
-}
-
 function saveImageHandler() {
-  var dataURL = stage.toDataURL({ pixelRatio: 1 });
-  const base64url = convertToBase64FileSystem(dataURL);
-  base64url.then((val) => console.log(val));
+  const base64IMG = stage.toDataURL();
+  console.log(base64IMG);
 }
 
-document
-  .getElementById("save")
-  .addEventListener("click", saveImageHandler, false);
-
-stage.on("mousedown", mouseDownHandler);
-stage.on("mousemove", mouseMoveHandler);
-window.addEventListener("keyup", keyupHander);
+saveButton.addEventListener('click', saveImageHandler, false);
+stage.on('mousedown', mouseDownHandler);
+stage.on('mousemove', mouseMoveHandler);
+window.addEventListener('keyup', keyupHander);
