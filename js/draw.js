@@ -19,6 +19,18 @@ const lineLayer = new Konva.Layer();
 stage.add(imgLayer);
 stage.add(lineLayer);
 
+function createLine(startPoint, pos) {
+  const line = new Konva.Line({
+    points: [startPoint.x, startPoint.y, pos.x, pos.y],
+    stroke: 'yellow',
+    strokeWidth: 2,
+    lineCap: 'round',
+    lineJoin: 'round',
+  });
+  lineLayer.add(line);
+  return line;
+}
+
 function loadImg() {
   const img = new Konva.Image({
     x: 0,
@@ -53,14 +65,7 @@ function mouseMoveHandler() {
     if (line) {
       line.points([startPoint.x, startPoint.y, pos.x, pos.y]);
     } else {
-      line = new Konva.Line({
-        points: [startPoint.x, startPoint.y, pos.x, pos.y],
-        stroke: 'yellow',
-        strokeWidth: 2,
-        lineCap: 'round',
-        lineJoin: 'round',
-      });
-      lineLayer.add(line);
+      line = createLine(startPoint, pos);
     }
     lineLayer.draw();
   }
@@ -77,6 +82,9 @@ function keyupHander(event) {
     return;
   }
   if ((event.ctrlKey && name === 'Z') || name === 'z') {
+    if (line) {
+      line.remove();
+    }
     fixedPosition();
   }
 }
