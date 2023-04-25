@@ -1,12 +1,13 @@
-const saveButton = document.getElementById("save");
-const eraseButton = document.getElementById("erase");
+const saveButton = document.getElementById('save');
+const eraseButton = document.getElementById('erase');
+const addMarker = document.getElementById('add-marker');
 // will be dynamic temporary for testing
 const width = window.innerWidth / 2;
 const height = window.innerHeight / 2;
-const imgSRC = "./img/map.jpg";
+const imgSRC = './img/map.jpg';
 
 const stage = new Konva.Stage({
-  container: "container",
+  container: 'container',
   width: width,
   height: height,
 });
@@ -14,10 +15,12 @@ const stage = new Konva.Stage({
 // create layers here
 const imgLayer = new Konva.Layer();
 const lineLayer = new Konva.Layer();
+const markerLayer = new Konva.Layer();
 
 // add all layers here
 stage.add(imgLayer);
 stage.add(lineLayer);
+stage.add(markerLayer);
 
 function createLine(startPoint, pos) {
   const line = new Konva.Line({
@@ -50,9 +53,15 @@ imageObj.onload = loadImg;
 // drawing line
 let startPoint;
 let line;
+let lineDraw = true;
 const linePoints = [];
 
 function mouseDownHandler() {
+  if (lineDraw === false) {
+    fixedPosition();
+    addMarkup();
+    return;
+  }
   if (startPoint) {
     fixedPosition();
   }
@@ -80,7 +89,7 @@ function fixedPosition() {
 
 function keyupHander(event) {
   var name = event.key;
-  if (name === "Control") {
+  if (name === 'Control') {
     return;
   }
   if ((event.ctrlKey && name === 'Z') || name === 'z') {
@@ -92,7 +101,7 @@ function keyupHander(event) {
 }
 
 function downloadURI(uri, name) {
-  var link = document.createElement("a");
+  var link = document.createElement('a');
   link.download = name;
   link.href = uri;
   document.body.appendChild(link);
@@ -114,18 +123,37 @@ function eraseHandler(e) {
     lineLayer.removeChildren();
     line = new Konva.Line({
       points: [...linePoints],
-      stroke: "yellow",
+      stroke: 'yellow',
       strokeWidth: 2,
-      lineCap: "round",
-      lineJoin: "round",
+      lineCap: 'round',
+      lineJoin: 'round',
     });
     lineLayer.add(line);
     lineLayer.draw();
   }
 }
 
-saveButton.addEventListener("click", saveImageHandler, false);
-eraseButton.addEventListener("click", eraseHandler, false);
-stage.on("mousedown", mouseDownHandler);
-stage.on("mousemove", mouseMoveHandler);
-window.addEventListener("keyup", keyupHander);
+function addMarkup() {
+  const pos = stage.getPointerPosition();
+  const circle = new Konva.Circle({
+    x: pos.x,
+    y: pos.y,
+    radius: 5,
+    fill: 'red',
+    stroke: 'black',
+    strokeWidth: 1,
+  });
+  markerLayer.add(circle);
+  markerLayer.draw();
+}
+
+saveButton.addEventListener('click', saveImageHandler, false);
+eraseButton.addEventListener('click', eraseHandler, false);
+addMarker.addEventListener('click', () => {
+  line?.remove();
+  addMarker.innerText = lineDraw ? 'enable marker' : 'enable line draw';
+  lineDraw = !lineDraw;
+});
+stage.on('mousedown', mouseDownHandler);
+stage.on('mousemove', mouseMoveHandler);
+window.addEventListener('keyup', keyupHander);
