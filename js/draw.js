@@ -79,7 +79,7 @@ function mouseMoveHandler() {
     } else {
       line = createLine(startPoint, pos);
     }
-    lineLayer.draw();
+    // lineLayer.draw();
   }
 }
 
@@ -93,13 +93,14 @@ function keyupHander(event) {
   if (name === 'Control') {
     return;
   }
-  if ((event.ctrlKey && name === 'Z') || name === 'z') {
+  if ((event.ctrlKey && name === 'Z') || (event.ctrlKey && name === 'z')) {
     if (line) {
       line.remove();
     }
-    linesPoints.push(linePoints);
-    linePoints = [];
-    console.log(linesPoints);
+    if (linePoints.length > 0) {
+      linesPoints.push(linePoints);
+      linePoints = [];
+    }
     fixedPosition();
   }
 }
@@ -125,6 +126,7 @@ function eraseHandler(e) {
     if (lastLine.length >= 2) {
       lastLine.pop();
       lastLine.pop();
+      if (lastLine.length === 0) linesPoints.pop();
     } else {
       if (lastLine.length === 1) {
         lastLine.pop();
@@ -138,19 +140,23 @@ function eraseHandler(e) {
         lastLine.pop();
       }
     }
-    lineLayer.removeChildren();
-    for (let i = 0; i < linesPoints.length; i++) {
-      line = new Konva.Line({
-        points: [...linesPoints[i]],
-        stroke: 'yellow',
-        strokeWidth: 2,
-        lineCap: 'round',
-        lineJoin: 'round',
-      });
-      lineLayer.add(line);
-    }
-    lineLayer.draw();
+    redraw();
   }
+}
+
+function redraw() {
+  lineLayer.removeChildren();
+  for (let i = 0; i < linesPoints.length; i++) {
+    line = new Konva.Line({
+      points: [...linesPoints[i]],
+      stroke: 'yellow',
+      strokeWidth: 2,
+      lineCap: 'round',
+      lineJoin: 'round',
+    });
+    lineLayer.add(line);
+  }
+  lineLayer.draw();
 }
 
 function addMarkup() {
