@@ -79,7 +79,7 @@ function mouseMoveHandler() {
     } else {
       line = createLine(startPoint, pos);
     }
-    // lineLayer.draw();
+    lineLayer.draw();
   }
 }
 
