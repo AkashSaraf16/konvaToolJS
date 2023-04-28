@@ -79,7 +79,7 @@ function mouseMoveHandler() {
     } else {
       line = createLine(startPoint, pos);
     }
-    // lineLayer.draw();
+    lineLayer.draw();
   }
 }
 
@@ -155,6 +155,7 @@ function redraw() {
       lineJoin: 'round',
     });
     lineLayer.add(line);
+    fixedPosition();
   }
   lineLayer.draw();
 }
