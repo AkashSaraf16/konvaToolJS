@@ -31,6 +31,7 @@ function createLine(startPoint, pos) {
     lineJoin: 'round',
   });
   lineLayer.add(line);
+  linePoints.push(line);
   return line;
 }
 
@@ -55,7 +56,6 @@ let startPoint;
 let line;
 let lineDraw = true;
 let linePoints = [];
-const linesPoints = [];
 
 function mouseDownHandler() {
   if (lineDraw === false) {
@@ -68,7 +68,6 @@ function mouseDownHandler() {
   }
   const pos = stage.getPointerPosition();
   startPoint = pos;
-  linePoints.push(startPoint.x, startPoint.y);
 }
 
 function mouseMoveHandler() {
@@ -97,22 +96,8 @@ function keyupHander(event) {
     if (line) {
       line.remove();
     }
-    if (linePoints.length > 0) {
-      linesPoints.push(linePoints);
-      linePoints = [];
-    }
     fixedPosition();
   }
-}
-
-function downloadURI(uri, name) {
-  var link = document.createElement('a');
-  link.download = name;
-  link.href = uri;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  delete link;
 }
 
 function saveImageHandler() {
@@ -121,43 +106,16 @@ function saveImageHandler() {
 }
 
 function eraseHandler(e) {
-  if (linesPoints.length > 0) {
-    let lastLine = linesPoints[linesPoints.length - 1];
-    if (lastLine.length >= 2) {
-      lastLine.pop();
-      lastLine.pop();
-      if (lastLine.length === 0) linesPoints.pop();
-    } else {
-      if (lastLine.length === 1) {
-        lastLine.pop();
-        linesPoints.pop();
-        lastLine = linesPoints[linesPoints.length - 1];
-        lastLine.pop();
-      } else {
-        linesPoints.pop();
-        lastLine = linesPoints[linesPoints.length - 1];
-        lastLine.pop();
-        lastLine.pop();
-      }
-    }
+  if (linePoints.length > 0) {
+    const currentElement = linePoints.pop();
+    currentElement.remove();
     redraw();
   }
 }
 
 function redraw() {
-  lineLayer.removeChildren();
-  for (let i = 0; i < linesPoints.length; i++) {
-    line = new Konva.Line({
-      points: [...linesPoints[i]],
-      stroke: 'yellow',
-      strokeWidth: 2,
-      lineCap: 'round',
-      lineJoin: 'round',
-    });
-    lineLayer.add(line);
-    fixedPosition();
-  }
   lineLayer.draw();
+  markerLayer.draw();
 }
 
 function addMarkup() {
@@ -171,6 +129,7 @@ function addMarkup() {
     strokeWidth: 1,
   });
   markerLayer.add(circle);
+  linePoints.push(circle);
   markerLayer.draw();
 }
 
