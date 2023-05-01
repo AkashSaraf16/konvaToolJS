@@ -2,9 +2,14 @@ const saveButton = document.getElementById('save');
 const eraseButton = document.getElementById('erase');
 const addMarker = document.getElementById('add-marker');
 // will be dynamic temporary for testing
-const width = window.innerWidth / 2;
-const height = window.innerHeight / 2;
-const imgSRC = './img/map.jpg';
+const width = 500;
+const height = 500;
+const params = new Proxy(new URLSearchParams(window.location.search), {
+  get: (searchParams, prop) => searchParams.get(prop),
+});
+const lat = params.lat;
+const lng = params.lng;
+const imgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=21&size=500x500&maptype=satellite&key=AIzaSyCWYJz8prBHnYy9kXP9junbqQIARXx3pGk`;
 
 const stage = new Konva.Stage({
   container: 'container',
@@ -48,7 +53,8 @@ function loadImg() {
 }
 
 const imageObj = new Image();
-imageObj.src = imgSRC;
+imageObj.src = imgUrl;
+imageObj.crossOrigin = 'Anonymous';
 imageObj.onload = loadImg;
 
 // drawing line
@@ -101,6 +107,7 @@ function keyupHander(event) {
 }
 
 function saveImageHandler() {
+  line?.remove();
   const base64IMG = stage.toDataURL();
   console.log(base64IMG);
 }
@@ -137,7 +144,7 @@ saveButton.addEventListener('click', saveImageHandler, false);
 eraseButton.addEventListener('click', eraseHandler, false);
 addMarker.addEventListener('click', () => {
   line?.remove();
-  addMarker.innerText = lineDraw ? 'enable marker' : 'enable line draw';
+  addMarker.innerText = lineDraw ? 'Enable marker' : 'Enable line draw';
   lineDraw = !lineDraw;
 });
 stage.on('mousedown', mouseDownHandler);
