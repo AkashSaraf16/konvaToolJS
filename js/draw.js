@@ -109,7 +109,12 @@ function keyupHander(event) {
 function saveImageHandler() {
   line?.remove();
   const base64IMG = stage.toDataURL();
-  console.log(base64IMG);
+  const base64Event = new CustomEvent('base64event', {
+    detail: {
+      base64Url: base64IMG,
+    },
+  });
+  document.dispatchEvent(base64Event);
 }
 
 function eraseHandler(e) {
