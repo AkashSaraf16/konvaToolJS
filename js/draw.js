@@ -9,6 +9,7 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
 });
 const lat = params.lat;
 const lng = params.lng;
+if (!lat || !lng) window.location.href = '../fallback.html';
 const imgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=21&size=500x500&maptype=satellite&key=AIzaSyCWYJz8prBHnYy9kXP9junbqQIARXx3pGk`;
 
 const stage = new Konva.Stage({
@@ -109,12 +110,10 @@ function keyupHander(event) {
 function saveImageHandler() {
   line?.remove();
   const base64IMG = stage.toDataURL();
-  const base64Event = new CustomEvent('base64event', {
-    detail: {
-      base64Url: base64IMG,
-    },
-  });
-  document.dispatchEvent(base64Event);
+  const eventData = {
+    img: base64IMG,
+  };
+  window.parent.postMessage({ id: 'GENESIS_IMG', details: eventData }, '*');
 }
 
 function eraseHandler(e) {
