@@ -7,9 +7,11 @@ const height = 500;
 const params = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
 });
-const lat = params.lat;
-const lng = params.lng;
-if (!lat || !lng) window.location.href = '../fallback.html';
+const lat = params.lat || 35.1303465; // for testing
+const lng = params.lng || -117.9702367; // for testing
+if (!lat || !lng) {
+  window.location.href = '../fallback.html';
+}
 const imgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=21&size=500x500&maptype=satellite&key=AIzaSyCWYJz8prBHnYy9kXP9junbqQIARXx3pGk`;
 
 const stage = new Konva.Stage({
@@ -113,6 +115,7 @@ function saveImageHandler() {
   const eventData = {
     img: base64IMG,
   };
+  console.log(base64IMG);
   window.parent.postMessage({ id: 'GENESIS_IMG', details: eventData }, '*');
 }
 
