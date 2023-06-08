@@ -122,4 +122,3 @@ function removePoints(filteredLines, currentCircle) {
 massHullPoints.slice(0,1).forEach((eachHullPoints) => {
   renderHull(eachHullPoints);
 });
-renderHull();
