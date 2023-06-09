@@ -18,12 +18,10 @@ const stage = new Konva.Stage({
 const lineLayer = new Konva.Layer();
 const circleLayer = new Konva.Layer();
 
-
 stage.add(lineLayer);
 stage.add(circleLayer);
 
-function renderHull(hullPoints) {
-
+function renderHull(hullPoints, group) {
   let filteredLines = [];
   for (let i = 0; i < hullPoints?.length - 1; i++) {
     const line = new Konva.Line({
@@ -36,6 +34,7 @@ function renderHull(hullPoints) {
       stroke: 'black',
       strokeWidth: 2,
     });
+    line.group = group;
 
     const circleStart = new Konva.Circle({
       x: hullPoints[i][0],
@@ -44,6 +43,7 @@ function renderHull(hullPoints) {
       fill: 'red',
       draggable: true,
     });
+    circleStart.group = group;
 
     line.startCircle = circleStart;
 
@@ -60,8 +60,9 @@ function renderHull(hullPoints) {
     const intersectLines = lineLayer.children.filter((eachLine) => {
       const [x1, y1, x2, y2] = eachLine.points();
       if (
-        (x1 === currentCircle.x() && y1 === currentCircle.y()) ||
-        (x2 === currentCircle.x() && y2 === currentCircle.y())
+        eachLine.group === currentCircle.group &&
+        ((x1 === currentCircle.x() && y1 === currentCircle.y()) ||
+          (x2 === currentCircle.x() && y2 === currentCircle.y()))
       ) {
         return true;
       }
@@ -75,6 +76,8 @@ function renderHull(hullPoints) {
 
   function handleCircleMove(event) {
     const currentCircle = event.target;
+    findNearerPoints(currentCircle);
+
     filteredLines.forEach((eachLine) => {
       if (eachLine.startCircle._id === currentCircle._id) {
         const [, , x2, y2] = eachLine.points();
@@ -111,14 +114,30 @@ function removePoints(filteredLines, currentCircle) {
     stroke: 'black',
     strokeWidth: 2,
   });
+  newLine.group = lineCircle.group;
   newLine.startCircle = lineCircle;
   currentCircle.remove();
   lineLayer.add(newLine);
   lineLayer.batchDraw();
-  console.log(lineLayer.children)
-
+  console.log(lineLayer.children);
 }
 
-massHullPoints.slice(0,1).forEach((eachHullPoints) => {
-  renderHull(eachHullPoints);
+massHullPoints.slice(0,2).forEach((eachHullPoints, index) => {
+  renderHull(eachHullPoints, index);
 });
+
+function findNearerPoints(currentCircle) {
+  const [x, y] = [currentCircle.x(), currentCircle.y()];
+  circleLayer.children.map((eachCircle) => {
+    if (
+      Math.abs(eachCircle.x() - x) <= 7 &&
+      Math.abs(eachCircle.y() - y) <= 7 &&
+      eachCircle._id != currentCircle._id &&
+      eachCircle.group != currentCircle.group
+    ) {
+      currentCircle.x(eachCircle.x());
+      currentCircle.y(eachCircle.y());
+    }
+  });
+  return false;
+}
